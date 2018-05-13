@@ -6,18 +6,18 @@
 
 package com.psl;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Client {
 
 	public static int findRemCust(int saletime, int cust, int[] custArr){
 		int allotedPersons=0;
 		int validPerson=0;
-		boolean IsFirstPerson=true;
 		int indexOfNegativePerson=0;
 		int finalSaleTime=saletime;
+		int currentTime=0;
 		
 		List<Integer> list = new ArrayList<Integer>();
 		
@@ -27,7 +27,9 @@ public class Client {
 				break;
 			}
 		}
+		
 		Arrays.sort(custArr);
+		
 		for(int i=0;i<custArr.length;i++) {
 			if(!(custArr[i]<0))
 				list.add(custArr[i]);				
@@ -45,31 +47,24 @@ public class Client {
 		}
 		
 		System.out.println("Valid Person in the queue are  : "+validPerson);
-		
 		for(int arrTime : list) {
-			System.out.println("For person with arrival time : "+arrTime);
-			if(arrTime<0) {
-				System.out.println("Invalid arrival time encountered ! Exiting");
+			System.out.println("-------For person arriving at : "+ arrTime+" -------");
+			if(arrTime<0){
+				System.out.println("Invalid time encountered");
 				break;
 			}
-			if( arrTime > finalSaleTime || (arrTime + 3) > finalSaleTime) {
-				System.out.println("Saletime over");
+			if(arrTime < currentTime)
+				arrTime = currentTime;
+			currentTime = (arrTime + 3);
+			if(finalSaleTime==0 || currentTime > finalSaleTime) {
+				System.out.println("Sale is over");
 				break;
-			}	
-			if(IsFirstPerson){
-				System.out.println("First person arrived");
-				saletime -= (arrTime + 3);
-				allotedPersons++;
-				IsFirstPerson=false;
-				System.out.println("Saletime : "+saletime+" & alloted Persons : "+allotedPersons);
-				continue;
 			}
-			saletime -= 3;
 			allotedPersons++;
-			System.out.println("Saletime : "+saletime+" & alloted Persons : "+allotedPersons);
+			System.out.println("Current time : "+currentTime);
+			System.out.println("Remaining time : "+(finalSaleTime - currentTime));
 		}
-		
-		return (validPerson!=0 && (validPerson<allotedPersons)) ? validPerson - allotedPersons : 0;
+		return validPerson - allotedPersons;
 	}
 	public static void main(String args[])
 	{
